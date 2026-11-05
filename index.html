@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Desert Spice Arabian BBQ 'N' Mandi</title>
+  
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#DE2B2B',
+            cream: '#F5DBCA',
+            darkRed: '#1A0404',
+            midRed: '#2D0808',
+            accentGold: '#E5A93B',
+          },
+          fontFamily: {
+            heading: ['Cinzel', 'serif'],
+            body: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html.lenis, html.lenis body { height: auto; }
+    .lenis.lenis-smooth { scroll-behavior: auto !important; }
+    .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+    .lenis.lenis-stopped { overflow: hidden; }
+    
+    body {
+      background-color: #1A0404;
+      color: #F5DBCA;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+    
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(245, 219, 202, 0.08) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    
+    .text-glow {
+      text-shadow: 0 0 20px rgba(222, 43, 43, 0.6);
+    }
+    
+    .glass-panel {
+      background: rgba(45, 8, 8, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(245, 219, 202, 0.15);
+    }
+    
+    .marquee-content {
+      display: flex;
+      animation: marquee 25s linear infinite;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    
+    .arch-frame {
+      border-radius: 200px 200px 0 0;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1A0404; }
+    ::-webkit-scrollbar-thumb { background: #DE2B2B; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-darkRed text-cream antialiased bg-grid-pattern selection:bg-brand selection:text-cream">
+
+  <!-- Splash Screen Entrance Animation -->
+  <div id="splash-screen" class="fixed inset-0 z-[100] bg-darkRed flex flex-col items-center justify-center p-4">
+    <div id="splash-icon" class="w-24 h-24 rounded-full bg-brand/20 border-2 border-brand flex items-center justify-center text-brand text-4xl mb-6 shadow-2xl shadow-brand/40">
+      <i class="fa-solid font-bold fa-utensils"></i>
+    </div>
+    <h1 id="splash-title" class="font-heading text-2xl md:text-4xl font-extrabold text-cream text-center tracking-widest uppercase">
+      Desert Spice <span class="block text-sm md:text-lg text-brand font-body mt-2 tracking-normal">Arabian BBQ 'N' Mandi</span>
+    </h1>
+    <div class="mt-8 w-48 h-1 bg-midRed rounded-full overflow-hidden">
+      <div id="splash-progress" class="h-full bg-brand w-0"></div>
+    </div>
+  </div>
+
+  <!-- Sticky Mobile & Desktop Navigation -->
+  <nav class="fixed top-0 left-0 w-full z-40 glass-panel border-b border-cream/10">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-3 group">
+        <div class="w-10 h-10 rounded-full bg-brand flex items-center justify-center text-cream text-lg font-bold group-hover:scale-105 transition-transform">
+          DS
+        </div>
+        <div>
+          <span class="font-heading font-extrabold text-lg tracking-wide block leading-tight text-cream">DESERT SPICE</span>
+          <span class="text-[10px] text-brand font-semibold uppercase tracking-widest block">BBQ 'N' Mandi</span>
+        </div>
+      </a>
+
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-8 font-medium text-sm">
+        <button onclick="navigateTo('home')" class="nav-btn text-cream hover:text-brand transition-colors py-1" data-target="home">Home</button>
+        <button onclick="navigateTo('menu')" class="nav-btn text-cream/70 hover:text-brand transition-colors py-1" data-target="menu">Menu</button>
+        <button onclick="navigateTo('private-dining')" class="nav-btn text-cream/70 hover:text-brand transition-colors py-1" data-target="private-dining">Private Dining</button>
+        <button onclick="navigateTo('why-us')" class="nav-btn text-cream/70 hover:text-brand transition-colors py-1" data-target="why-us">Why Us</button>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <!-- Cart Drawer Toggle Button -->
+        <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-full bg-brand/20 border border-brand/40 text-cream hover:bg-brand transition-colors">
+          <i class="fa-solid fa-utensils"></i>
+          <span id="cart-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-brand text-cream text-xs font-bold rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+
+        <!-- Mobile Menu Hamburger Button -->
+        <button onclick="toggleMobileNav()" class="md:hidden p-2 text-cream text-xl">
+          <i id="mobile-menu-icon" class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-drawer" class="hidden md:hidden bg-midRed border-b border-cream/10 px-6 py-4 flex flex-col gap-4 font-medium text-base">
+      <button onclick="navigateTo('home'); toggleMobileNav()" class="text-left py-2 border-b border-cream/10 text-cream">Home</button>
+      <button onclick="navigateTo('menu'); toggleMobileNav()" class="text-left py-2 border-b border-cream/10 text-cream/80">Menu</button>
+      <button onclick="navigateTo('private-dining'); toggleMobileNav()" class="text-left py-2 border-b border-cream/10 text-cream/80">Private Dining</button>
+      <button onclick="navigateTo('why-us'); toggleMobileNav()" class="text-left py-2 text-cream/80">Why Us</button>
+    </div>
+  </nav>
+
+  <!-- Main Pages Container -->
+  <main class="pt-20">
+
+    <!-- PAGE 1: HOME -->
+    <div id="page-home" class="page-section min-h-screen">
+      <!-- Hero Section -->
+      <section class="relative min-h-[85vh] flex items-center justify-center px-4 py-16 overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#DE2B2B_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        
+        <div class="max-w-4xl mx-auto text-center relative z-10 space-y-6">
+          <span class="inline-block px-4 py-1.5 rounded-full bg-brand/20 border border-brand/40 text-brand text-xs uppercase tracking-widest font-semibold">
+            Mahbubnagar's Finest Mandi & BBQ (A/C)
+          </span>
+          <h1 class="font-heading text-4xl sm:text-6xl md:text-7xl font-black text-cream leading-tight">
+            Authentic Arabian <span class="text-brand text-glow block">Flavors & Tradition</span>
+          </h1>
+          <p class="text-cream/80 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed">
+            Experience rich slow-cooked Mandi, tender BBQ grills, signature Shawarmas, and creamy thick shakes crafted with authentic recipes.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 pt-4">
+            <button onclick="navigateTo('menu')" class="px-8 py-3.5 rounded-full bg-brand text-cream font-bold text-sm tracking-wider uppercase hover:bg-red-700 transition-all shadow-lg shadow-brand/30 hover:scale-105">
+              Explore Our Menu
+            </button>
+            <button onclick="openModal('reserve-modal')" class="px-8 py-3.5 rounded-full glass-panel border border-cream/30 text-cream font-bold text-sm tracking-wider uppercase hover:bg-cream hover:text-darkRed transition-all">
+              Book A Table
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Infinite Marquee Bar -->
+      <section class="py-4 bg-brand overflow-hidden text-cream font-heading font-bold uppercase text-sm tracking-widest border-y border-cream/20">
+        <div class="marquee-content whitespace-nowrap flex gap-12 items-center">
+          <span>🔥 Unlimited Mandi Feast</span><span>•</span>
+          <span>🍢 Turkish Kebabs & BBQ</span><span>•</span>
+          <span>🍗 DS Special Platter ₹970</span><span>•</span>
+          <span>❄️ VIP Air Conditioned Private Rooms</span><span>•</span>
+          <span>🍹 Shakes & Desserts</span><span>•</span>
+          <span>🔥 Unlimited Mandi Feast</span><span>•</span>
+          <span>🍢 Turkish Kebabs & BBQ</span><span>•</span>
+          <span>🍗 DS Special Platter ₹970</span><span>•</span>
+          <span>❄️ VIP Air Conditioned Private Rooms</span><span>•</span>
+          <span>🍹 Shakes & Desserts</span><span>•</span>
+        </div>
+      </section>
+
+      <!-- Our Story Section -->
+      <section class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6">
+            <span class="text-brand font-semibold text-xs tracking-widest uppercase block">Our Culinary Journey</span>
+            <h2 class="font-heading text-3xl md:text-4xl font-extrabold text-cream leading-snug">
+              Crafting Unforgettable Arabian & Indian Culinary Memories
+            </h2>
+            <p class="text-cream/80 text-sm leading-relaxed">
+              At Desert Spice, we believe dining is an experience of warmth and hospitality. From slow-roasted meats steeped in traditional secret spices to our signature Mandi rice cooked to fragrant perfection, every plate tells a story of passion.
+            </p>
+            <div class="grid grid-cols-2 gap-4 pt-2">
+              <div class="glass-panel p-4 rounded-xl border border-cream/10">
+                <h4 class="font-heading text-2xl font-bold text-brand">100% Halal</h4>
+                <p class="text-xs text-cream/70 mt-1">Fresh ingredients & premium meats daily</p>
+              </div>
+              <div class="glass-panel p-4 rounded-xl border border-cream/10">
+                <h4 class="font-heading text-2xl font-bold text-brand">A/C Majlis</h4>
+                <p class="text-xs text-cream/70 mt-1">Authentic floor seating for family dining</p>
+              </div>
+            </div>
+          </div>
+          <div class="relative">
+            <div class="w-full h-80 md:h-96 rounded-2xl glass-panel border border-cream/20 overflow-hidden flex items-center justify-center p-6 text-center">
+              <div class="space-y-4">
+                <div class="w-16 h-16 rounded-full bg-brand/20 text-brand text-3xl flex items-center justify-center mx-auto">
+                  <i class="fa-solid fa-drumstick-bite"></i>
+                </div>
+                <h3 class="font-heading text-xl font-bold text-cream">DS Special Platter — ₹970</h3>
+                <p class="text-xs text-cream/70 max-w-sm mx-auto">
+                  A mixed variety starter platter featuring Fish, Chicken Wings, Nuggets, and Sticks.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Celebrate Big In Our Intimate Spaces (Image Reference Layout Section) -->
+      <section class="py-20 px-4 bg-midRed/60 border-y border-cream/10">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div class="space-y-6">
+            <span class="text-cream/60 text-xs uppercase tracking-widest font-semibold block">Private Rooms</span>
+            <h2 class="font-heading text-3xl md:text-5xl font-extrabold text-cream leading-tight">
+              Celebrate big in our intimate spaces
+            </h2>
+            <p class="text-cream/80 text-sm md:text-base leading-relaxed">
+              Perfect for any occasion, no matter the size. Here, it feels like home—the ideal place to connect in comfort.
+            </p>
+            <button onclick="navigateTo('private-dining')" class="px-6 py-3 rounded-md bg-cream text-darkRed font-bold text-xs uppercase tracking-wider hover:bg-brand hover:text-cream transition-colors">
+              Learn More
+            </button>
+          </div>
+          <div class="flex justify-center">
+            <div class="w-full max-w-md h-[400px] arch-frame bg-cream/10 border-2 border-cream/20 relative overflow-hidden flex flex-col items-center justify-center p-8 text-center group">
+              <div class="w-20 h-20 rounded-full bg-brand/30 border border-brand/50 flex items-center justify-center text-brand text-3xl mb-4 group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-couch"></i>
+              </div>
+              <h3 class="font-heading text-xl font-bold text-cream">Authentic Majlis Experience</h3>
+              <p class="text-xs text-cream/70 mt-2 max-w-xs">
+                Spacious carpeted floors, low cushions, and privacy curtains for family gatherings.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Customer Reviews -->
+      <section class="py-20 px-4 max-w-6xl mx-auto">
+        <div class="text-center space-y-3 mb-12">
+          <span class="text-brand font-semibold text-xs tracking-widest uppercase">What Our Guests Say</span>
+          <h2 class="font-heading text-3xl md:text-4xl font-extrabold text-cream">Customer Reviews</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-4">
+            <div class="text-accentGold text-sm">★★★★★</div>
+            <p class="text-xs text-cream/80 italic leading-relaxed">
+              "Best Mutton Juicy Mandi in Mahbubnagar! Meat fell right off the bone, and the BBQ Faham chicken was super smoky and delicious."
+            </p>
+            <div class="border-t border-cream/10 pt-3">
+              <span class="font-bold text-xs text-cream block">Rahul Sharma</span>
+              <span class="text-[10px] text-cream/50">Local Guide</span>
+            </div>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-4">
+            <div class="text-accentGold text-sm">★★★★★</div>
+            <p class="text-xs text-cream/80 italic leading-relaxed">
+              "The DS Special Platter is a complete game changer. Perfect spot for family weekend dinners in the private AC dining cabins."
+            </p>
+            <div class="border-t border-cream/10 pt-3">
+              <span class="font-bold text-xs text-cream block">Syed Ahmed</span>
+              <span class="text-[10px] text-cream/50">Verified Diner</span>
+            </div>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-4">
+            <div class="text-accentGold text-sm">★★★★★</div>
+            <p class="text-xs text-cream/80 italic leading-relaxed">
+              "Loved their Turkish Shawarma and Apricot Delight dessert. Friendly staff and fast service."
+            </p>
+            <div class="border-t border-cream/10 pt-3">
+              <span class="font-bold text-xs text-cream block">Ananya Rao</span>
+              <span class="text-[10px] text-cream/50">Food Enthusiast</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Location & Contact Section -->
+      <section class="py-16 px-4 bg-midRed/40 border-t border-cream/10">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+          <div class="space-y-4">
+            <span class="text-brand font-semibold text-xs tracking-widest uppercase">Visit Us</span>
+            <h2 class="font-heading text-2xl md:text-3xl font-extrabold text-cream">Location & Hours</h2>
+            <div class="space-y-3 text-xs text-cream/80">
+              <p class="flex items-start gap-3">
+                <i class="fa-solid fa-location-dot text-brand text-base mt-0.5"></i>
+                <span>H No, 01-04-94/E, New Town, Mahbubnagar, Telangana 509001</span>
+              </p>
+              <p class="flex items-center gap-3">
+                <i class="fa-solid fa-phone text-brand text-base"></i>
+                <span>Contact: +91 99499 11045</span>
+              </p>
+              <p class="flex items-center gap-3">
+                <i class="fa-solid fa-clock text-brand text-base"></i>
+                <span>Open Everyday: 11:30 AM – 11:00 PM</span>
+              </p>
+            </div>
+          </div>
+          <div class="h-64 rounded-2xl overflow-hidden glass-panel border border-cream/20 relative flex items-center justify-center p-4 text-center">
+            <div class="space-y-2">
+              <i class="fa-solid fa-map-location-dot text-4xl text-brand"></i>
+              <p class="text-xs font-semibold text-cream">Desert Spice Arabian BBQ 'N' Mandi</p>
+              <p class="text-[10px] text-cream/60">New Town, Mahbubnagar</p>
+              <a href="https://maps.google.com/?q=Desert+Spice+Mahbubnagar" target="_blank" class="inline-block mt-2 px-4 py-2 rounded-full bg-brand/20 border border-brand text-cream text-xs hover:bg-brand transition-colors">
+                Open in Google Maps
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- PAGE 2: MENU -->
+    <div id="page-menu" class="page-section hidden min-h-screen px-4 py-12">
+      <div class="max-w-6xl mx-auto space-y-8">
+        <div class="text-center space-y-3">
+          <h1 class="font-heading text-4xl md:text-5xl font-extrabold text-cream">Our Complete Menu</h1>
+          <p class="text-cream/70 text-sm max-w-xl mx-auto">Explore our wide selection of authentic Arabian Mandi, Starters, BBQ, Shawarma, Drinks, & Desserts.</p>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="glass-panel p-4 rounded-2xl border border-cream/10 space-y-4">
+          <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full sm:w-72">
+              <input type="text" id="menu-search" onkeyup="filterMenu()" placeholder="Search dishes..." class="w-full bg-darkRed/80 border border-cream/20 rounded-full px-4 py-2 text-xs text-cream placeholder-cream/40 focus:outline-none focus:border-brand">
+              <i class="fa-solid fa-magnifying-glass absolute right-4 top-2.5 text-xs text-cream/40"></i>
+            </div>
+            
+            <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-2 sm:pb-0 font-medium text-xs">
+              <button onclick="setVegFilter('all')" id="filter-all" class="filter-tab px-4 py-2 rounded-full bg-brand text-cream">All</button>
+              <button onclick="setVegFilter('veg')" id="filter-veg" class="filter-tab px-4 py-2 rounded-full bg-darkRed border border-cream/20 text-cream/70 hover:border-brand">🟢 Veg Only</button>
+              <button onclick="setVegFilter('nonveg')" id="filter-nonveg" class="filter-tab px-4 py-2 rounded-full bg-darkRed border border-cream/20 text-cream/70 hover:border-brand">🔴 Non-Veg</button>
+            </div>
+          </div>
+
+          <!-- Category Pills -->
+          <div id="category-pills" class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Menu Items Display Grid -->
+        <div id="menu-container" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Populated via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: PRIVATE DINING -->
+    <div id="page-private-dining" class="page-section hidden min-h-screen px-4 py-12">
+      <div class="max-w-5xl mx-auto space-y-12">
+        <div class="text-center space-y-3">
+          <span class="text-brand font-semibold text-xs tracking-widest uppercase">Exclusive Hospitality</span>
+          <h1 class="font-heading text-4xl md:text-5xl font-extrabold text-cream">Private Dining & AC Cabins</h1>
+          <p class="text-cream/70 text-sm max-w-xl mx-auto">Experience traditional floor Majlis seating or private family AC dining rooms.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-4">
+            <div class="w-12 h-12 rounded-full bg-brand/20 text-brand text-2xl flex items-center justify-center">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-cream">Arabian Floor Majlis</h3>
+            <p class="text-xs text-cream/80 leading-relaxed">
+              Traditional carpeted floor seating designed for group feasts, family gatherings, and authentic Arabian style dining.
+            </p>
+            <ul class="text-xs text-cream/70 space-y-2 border-t border-cream/10 pt-4">
+              <li>✓ Accommodates groups up to 12 persons</li>
+              <li>✓ Traditional low tables & cushions</li>
+              <li>✓ Air Conditioned comfort</li>
+            </ul>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-4">
+            <div class="w-12 h-12 rounded-full bg-brand/20 text-brand text-2xl flex items-center justify-center">
+              <i class="fa-solid fa-door-closed"></i>
+            </div>
+            <h3 class="font-heading text-xl font-bold text-cream">VIP AC Family Cabins</h3>
+            <p class="text-xs text-cream/80 leading-relaxed">
+              Enclosed private dining spaces ensuring complete privacy and comfort for families and formal dinners.
+            </p>
+            <ul class="text-xs text-cream/70 space-y-2 border-t border-cream/10 pt-4">
+              <li>✓ Soundproofed private cabins</li>
+              <li>✓ Dedicated service staff</li>
+              <li>✓ Prior booking recommended</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="text-center pt-6">
+          <button onclick="openModal('reserve-modal')" class="px-8 py-3.5 rounded-full bg-brand text-cream font-bold text-sm uppercase tracking-wider hover:bg-red-700 transition-all">
+            Reserve A Private Cabin Now
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: WHY US -->
+    <div id="page-why-us" class="page-section hidden min-h-screen px-4 py-12">
+      <div class="max-w-5xl mx-auto space-y-12">
+        <div class="text-center space-y-3">
+          <span class="text-brand font-semibold text-xs tracking-widest uppercase">The Desert Spice Standard</span>
+          <h1 class="font-heading text-4xl md:text-5xl font-extrabold text-cream">Why Dine With Us?</h1>
+          <p class="text-cream/70 text-sm max-w-xl mx-auto">We prioritize flavor, hygiene, authenticity, and warm hospitality above all else.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-3 text-center">
+            <div class="w-14 h-14 rounded-full bg-brand/20 text-brand text-2xl flex items-center justify-center mx-auto mb-2">
+              <i class="fa-solid fa-fire-burner"></i>
+            </div>
+            <h3 class="font-heading text-lg font-bold text-cream">Secret Arabic Spices</h3>
+            <p class="text-xs text-cream/70 leading-relaxed">Blended in-house using authentic middle-eastern recipes for rich, aromatic broth and rice.</p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-3 text-center">
+            <div class="w-14 h-14 rounded-full bg-brand/20 text-brand text-2xl flex items-center justify-center mx-auto mb-2">
+              <i class="fa-solid fa-check-double"></i>
+            </div>
+            <h3 class="font-heading text-lg font-bold text-cream">100% Halal Meats</h3>
+            <p class="text-xs text-cream/70 leading-relaxed">Freshly sourced chicken, mutton, and seafood prepared strictly following halal standards.</p>
+          </div>
+
+          <div class="glass-panel p-6 rounded-2xl border border-cream/10 space-y-3 text-center">
+            <div class="w-14 h-14 rounded-full bg-brand/20 text-brand text-2xl flex items-center justify-center mx-auto mb-2">
+              <i class="fa-solid fa-snowflake"></i>
+            </div>
+            <h3 class="font-heading text-lg font-bold text-cream">Full A/C Comfort</h3>
+            <p class="text-xs text-cream/70 leading-relaxed">Spacious, clean, and fully air-conditioned ambience designed for memorable family gatherings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Cart Drawer Overlay -->
+  <div id="cart-drawer-overlay" class="fixed inset-0 bg-darkRed/80 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="toggleCartDrawer()"></div>
+  
+  <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full sm:w-96 bg-midRed z-50 border-l border-cream/20 p-6 flex flex-col translate-x-full transition-transform duration-300">
+    <div class="flex items-center justify-between border-b border-cream/10 pb-4">
+      <h3 class="font-heading text-lg font-bold text-cream">Your Order Tray</h3>
+      <button onclick="toggleCartDrawer()" class="text-cream/60 hover:text-cream text-xl">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <!-- Cart Items List -->
+    <div id="cart-items" class="flex-1 overflow-y-auto py-4 space-y-4">
+      <!-- Items dynamically injected -->
+    </div>
+
+    <!-- Cart Footer & Send to WhatsApp Button -->
+    <div class="border-t border-cream/10 pt-4 space-y-4">
+      <div class="flex justify-between items-center text-sm font-bold text-cream">
+        <span>Total Bill Amount:</span>
+        <span id="cart-total-price" class="text-brand text-lg">₹0.00</span>
+      </div>
+      
+      <button onclick="sendWhatsAppOrder()" class="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-colors">
+        <i class="fa-brands fa-whatsapp text-lg"></i> Send Order via WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Reservation Modal -->
+  <div id="reserve-modal" class="fixed inset-0 bg-darkRed/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+    <div class="glass-panel p-6 sm:p-8 rounded-2xl max-w-md w-full border border-cream/20 space-y-6 relative">
+      <button onclick="closeModal('reserve-modal')" class="absolute top-4 right-4 text-cream/60 hover:text-cream">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+      
+      <div class="text-center space-y-1">
+        <h3 class="font-heading text-xl font-bold text-cream">Reserve A Table / Cabin</h3>
+        <p class="text-xs text-cream/60">Fill in details to book your dining slot.</p>
+      </div>
+
+      <form onsubmit="handleReservation(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block text-cream/70 mb-1">Your Full Name</label>
+          <input type="text" required id="res-name" class="w-full bg-darkRed border border-cream/20 rounded-lg p-2.5 text-cream focus:outline-none focus:border-brand">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-cream/70 mb-1">Date</label>
+            <input type="date" required id="res-date" class="w-full bg-darkRed border border-cream/20 rounded-lg p-2.5 text-cream focus:outline-none focus:border-brand">
+          </div>
+          <div>
+            <label class="block text-cream/70 mb-1">Guests</label>
+            <input type="number" min="1" max="20" value="2" required id="res-guests" class="w-full bg-darkRed border border-cream/20 rounded-lg p-2.5 text-cream focus:outline-none focus:border-brand">
+          </div>
+        </div>
+        <div>
+          <label class="block text-cream/70 mb-1">Seating Preference</label>
+          <select id="res-type" class="w-full bg-darkRed border border-cream/20 rounded-lg p-2.5 text-cream focus:outline-none focus:border-brand">
+            <option value="Standard Table">Standard Table (AC)</option>
+            <option value="Arabian Majlis Floor">Arabian Majlis (Floor)</option>
+            <option value="VIP Private Cabin">VIP Private Cabin</option>
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-brand text-cream font-bold rounded-lg uppercase tracking-wider text-xs hover:bg-red-700 transition-colors">
+          Confirm Reservation
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript Codebase -->
+  <script>
+    // Smooth Scroll Initialization with Lenis
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Full Menu Dataset
+    const menuData = [
+      { id: 1, name: "Periperi Fries", price: 170, category: "Starters", isVeg: true },
+      { id: 2, name: "Ds Special Platter", price: 970, category: "Starters", isVeg: false, desc: "A Mixed variety platter of all our starters containing Fish, Chicken Wings, Nuggets, and Sticks." },
+      { id: 3, name: "French Fries", price: 170, category: "Starters", isVeg: true },
+      { id: 4, name: "Crispy Chicken", price: 380, category: "Starters", isVeg: false },
+      { id: 5, name: "Fry Wings (8pcs)", price: 350, category: "Starters", isVeg: false },
+      { id: 6, name: "Chicken Tikka (7pcs)", price: 420, category: "Starters", isVeg: false },
+      { id: 7, name: "Turkish Kebab (Chicken)", price: 495, category: "Starters", isVeg: false },
+      { id: 8, name: "Fish & Chips", price: 495, category: "Starters", isVeg: false },
+      { id: 9, name: "Chicken 65", price: 225, category: "Starters", isVeg: false },
+      { id: 10, name: "Chicken Lolipop 8pc", price: 225, category: "Starters", isVeg: false },
+      { id: 11, name: "Dragon Chicken", price: 225, category: "Starters", isVeg: false },
+      { id: 12, name: "Paneer Chilly", price: 210, category: "Starters", isVeg: true },
+      { id: 13, name: "Veg. Manchuriya", price: 145, category: "Starters", isVeg: true },
+      
+      { id: 14, name: "Chicken Wings Mandi", price: 335, category: "Main Course", isVeg: false },
+      { id: 15, name: "Ds Special Mandi", price: 1370, category: "Main Course", isVeg: false },
+      { id: 16, name: "Vegetarian Mandi", price: 320, category: "Main Course", isVeg: true },
+      { id: 17, name: "Bbq (Faham) Chicken Mandi", price: 430, category: "Main Course", isVeg: false },
+      { id: 18, name: "Crispy Chicken Mandi", price: 450, category: "Main Course", isVeg: false },
+      { id: 19, name: "Fry Chicken Mandi", price: 430, category: "Main Course", isVeg: false },
+      { id: 20, name: "Chicken 65 Mandi", price: 700, category: "Main Course", isVeg: false },
+      { id: 21, name: "Chicken Dum Biryani", price: 600, category: "Main Course", isVeg: false },
+      { id: 22, name: "Prawns Mandi", price: 810, category: "Main Course", isVeg: false },
+      { id: 23, name: "Fish Mandi", price: 545, category: "Main Course", isVeg: false },
+      { id: 24, name: "Mutton Bbq Mandi", price: 580, category: "Main Course", isVeg: false },
+      { id: 25, name: "Mutton Juicy Mandi", price: 580, category: "Main Course", isVeg: false },
+
+      { id: 26, name: "Kebab Shawarma", price: 240, category: "Shawarma", isVeg: false },
+      { id: 27, name: "Malai Chicken Shawarma", price: 240, category: "Shawarma", isVeg: false },
+      { id: 28, name: "Shawarma Veg", price: 130, category: "Shawarma", isVeg: true },
+      { id: 29, name: "Turkish Shawarma", price: 200, category: "Shawarma", isVeg: false },
+      { id: 30, name: "Ds Special Shawarma", price: 230, category: "Shawarma", isVeg: false },
+      { id: 31, name: "Shawarma Chicken", price: 140, category: "Shawarma", isVeg: false },
+      { id: 32, name: "Shawarma Bbq Chicken", price: 180, category: "Shawarma", isVeg: false },
+      { id: 33, name: "Shawarma Crispy Chicken", price: 200, category: "Shawarma", isVeg: false },
+      { id: 34, name: "Shawarma Grill Chicken", price: 200, category: "Shawarma", isVeg: false },
+      { id: 35, name: "Shawarma Mutton Bbq Special", price: 280, category: "Shawarma", isVeg: false },
+
+      { id: 36, name: "Chicken Fried Rice", price: 175, category: "Rice & Noodles", isVeg: false },
+      { id: 37, name: "Egg Fried Rice", price: 160, category: "Rice & Noodles", isVeg: false },
+      { id: 38, name: "Schezwan Fried Rice", price: 220, category: "Rice & Noodles", isVeg: true },
+      { id: 39, name: "Veg. Fried Rice", price: 145, category: "Rice & Noodles", isVeg: true },
+      { id: 40, name: "Chicken Noodles", price: 190, category: "Rice & Noodles", isVeg: false },
+      { id: 41, name: "Egg Noodles", price: 170, category: "Rice & Noodles", isVeg: false },
+      { id: 42, name: "Schezwan Noodles", price: 190, category: "Rice & Noodles", isVeg: true },
+      { id: 43, name: "Veg. Noodles", price: 145, category: "Rice & Noodles", isVeg: true },
+
+      { id: 44, name: "Chicken Pizza", price: 210, category: "Pizza", isVeg: false },
+      { id: 45, name: "Veg. Pizza", price: 190, category: "Pizza", isVeg: true },
+
+      { id: 46, name: "Blue Berry Mojito", price: 130, category: "Beverages", isVeg: true },
+      { id: 47, name: "Blue Ice Mojito", price: 130, category: "Beverages", isVeg: true },
+      { id: 48, name: "Classic Mojito", price: 130, category: "Beverages", isVeg: true },
+      { id: 49, name: "Green Mint Mojito", price: 130, category: "Beverages", isVeg: true },
+      { id: 50, name: "Campa - 200ml", price: 15, category: "Beverages", isVeg: true },
+      { id: 51, name: "Cool Drinks", price: 35, category: "Beverages", isVeg: true },
+      { id: 52, name: "Water Bottle (1ltr)", price: 25, category: "Beverages", isVeg: true },
+      { id: 53, name: "Campa - 500ml", price: 30, category: "Beverages", isVeg: true },
+      { id: 54, name: "Campa Tin - 185ml", price: 30, category: "Beverages", isVeg: true },
+      { id: 55, name: "Cold Drink (700ml)", price: 65, category: "Beverages", isVeg: true },
+
+      { id: 56, name: "Black Current Thick Shake", price: 200, category: "Thick Shakes", isVeg: true },
+      { id: 57, name: "Chocolate Thick Shake", price: 210, category: "Thick Shakes", isVeg: true },
+      { id: 58, name: "Kitkat Thick Shake", price: 210, category: "Thick Shakes", isVeg: true },
+      { id: 59, name: "Oreo Thick Shake", price: 210, category: "Thick Shakes", isVeg: true },
+      { id: 60, name: "Strawberry Thick Shake", price: 200, category: "Thick Shakes", isVeg: true },
+
+      { id: 61, name: "Apricot Delight", price: 200, category: "Desserts", isVeg: true },
+      { id: 62, name: "Rabdi", price: 135, category: "Desserts", isVeg: true },
+      { id: 63, name: "Kaddu Ki Kheer", price: 100, category: "Desserts", isVeg: true },
+      { id: 64, name: "Kunafa", price: 320, category: "Desserts", isVeg: true },
+      { id: 65, name: "Vinilla Scoop", price: 90, category: "Desserts", isVeg: true }
+    ];
+
+    let cart = [];
+    let currentCategory = "All";
+    let currentVegFilter = "all";
+
+    // Initialize Page
+    document.addEventListener("DOMContentLoaded", () => {
+      // Entrance Splash Animation
+      const tl = gsap.timeline();
+      tl.to("#splash-progress", { width: "100%", duration: 1.2, ease: "power2.inOut" })
+        .to("#splash-screen", { opacity: 0, duration: 0.6, onComplete: () => {
+          document.getElementById("splash-screen").style.display = "none";
+        }});
+
+      renderCategoryPills();
+      renderMenu();
+    });
+
+    // Single Page Navigation Function
+    function navigateTo(pageId) {
+      document.querySelectorAll(".page-section").forEach(sec => sec.classList.add("hidden"));
+      const targetPage = document.getElementById(`page-${pageId}`);
+      if(targetPage) targetPage.classList.remove("hidden");
+
+      document.querySelectorAll(".nav-btn").forEach(btn => {
+        if(btn.dataset.target === pageId) {
+          btn.classList.add("text-brand");
+          btn.classList.remove("text-cream/70");
+        } else {
+          btn.classList.remove("text-brand");
+          btn.classList.add("text-cream/70");
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileNav() {
+      const drawer = document.getElementById("mobile-drawer");
+      drawer.classList.toggle("hidden");
+    }
+
+    // Render Category Pills
+    function renderCategoryPills() {
+      const categories = ["All", ...new Set(menuData.map(i => i.category))];
+      const container = document.getElementById("category-pills");
+      container.innerHTML = categories.map(cat => `
+        <button onclick="setCategory('${cat}')" class="px-3.5 py-1.5 rounded-full border whitespace-nowrap ${currentCategory === cat ? 'bg-cream text-darkRed border-cream font-bold' : 'border-cream/20 text-cream/70 hover:border-brand'}">
+          ${cat}
+        </button>
+      `).join("");
+    }
+
+    function setCategory(cat) {
+      currentCategory = cat;
+      renderCategoryPills();
+      renderMenu();
+    }
+
+    function setVegFilter(filter) {
+      currentVegFilter = filter;
+      document.querySelectorAll(".filter-tab").forEach(tab => {
+        tab.classList.remove("bg-brand", "text-cream");
+        tab.classList.add("bg-darkRed", "text-cream/70");
+      });
+      document.getElementById(`filter-${filter}`).classList.add("bg-brand", "text-cream");
+      renderMenu();
+    }
+
+    function filterMenu() {
+      renderMenu();
+    }
+
+    // Render Menu Items Grid
+    function renderMenu() {
+      const searchVal = document.getElementById("menu-search")?.value.toLowerCase() || "";
+      const container = document.getElementById("menu-container");
+
+      const filtered = menuData.filter(item => {
+        const matchesCategory = currentCategory === "All" || item.category === currentCategory;
+        const matchesSearch = item.name.toLowerCase().includes(searchVal);
+        const matchesVeg = currentVegFilter === "all" ? true : currentVegFilter === "veg" ? item.isVeg : !item.isVeg;
+        return matchesCategory && matchesSearch && matchesVeg;
+      });
+
+      if(filtered.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-12 text-cream/50 text-xs">No matching dishes found.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="glass-panel p-5 rounded-2xl border border-cream/15 flex flex-col justify-between hover:border-brand/50 transition-all">
+          <div class="space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <span class="text-xs ${item.isVeg ? 'text-emerald-400' : 'text-brand'} font-bold">
+                ${item.isVeg ? '🟢 Veg' : '🔴 Non-Veg'}
+              </span>
+              <span class="font-heading font-extrabold text-brand text-sm">₹${item.price.toFixed(2)}</span>
+            </div>
+            <h4 class="font-heading font-bold text-cream text-base">${item.name}</h4>
+            ${item.desc ? `<p class="text-[11px] text-cream/60 leading-relaxed">${item.desc}</p>` : ''}
+          </div>
+          <button onclick="addToCart(${item.id})" class="mt-4 w-full py-2 bg-brand/20 hover:bg-brand border border-brand/40 text-cream rounded-xl text-xs font-semibold transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-plus text-xs"></i> Add to Order
+          </button>
+        </div>
+      `).join("");
+    }
+
+    // Cart Drawer Mechanics
+    function addToCart(id) {
+      const item = menuData.find(i => i.id === id);
+      const existing = cart.find(c => c.id === id);
+
+      if(existing) {
+        existing.qty++;
+      } else {
+        cart.push({ ...item, qty: 1 });
+      }
+
+      updateCartUI();
+      toggleCartDrawer(true);
+    }
+
+    function updateCartQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if(item) {
+        item.qty += delta;
+        if(item.qty <= 0) {
+          cart = cart.filter(c => c.id !== id);
+        }
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const badge = document.getElementById("cart-badge");
+      const totalItems = cart.reduce((acc, i) => acc + i.qty, 0);
+
+      if(totalItems > 0) {
+        badge.innerText = totalItems;
+        badge.classList.remove("hidden");
+      } else {
+        badge.classList.add("hidden");
+      }
+
+      const cartContainer = document.getElementById("cart-items");
+      if(cart.length === 0) {
+        cartContainer.innerHTML = `<p class="text-center text-xs text-cream/50 py-12">Your tray is empty.</p>`;
+      } else {
+        cartContainer.innerHTML = cart.map(c => `
+          <div class="flex items-center justify-between glass-panel p-3 rounded-xl border border-cream/10 text-xs">
+            <div>
+              <p class="font-bold text-cream">${c.name}</p>
+              <p class="text-brand font-semibold">₹${(c.price * c.qty).toFixed(2)}</p>
+            </div>
+            <div class="flex items-center gap-2 bg-darkRed px-2 py-1 rounded-lg border border-cream/20">
+              <button onclick="updateCartQty(${c.id}, -1)" class="text-cream/70 hover:text-brand">-</button>
+              <span class="font-bold text-cream px-1">${c.qty}</span>
+              <button onclick="updateCartQty(${c.id}, 1)" class="text-cream/70 hover:text-brand">+</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      const totalBill = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      document.getElementById("cart-total-price").innerText = `₹${totalBill.toFixed(2)}`;
+    }
+
+    function toggleCartDrawer(openState) {
+      const drawer = document.getElementById("cart-drawer");
+      const overlay = document.getElementById("cart-drawer-overlay");
+
+      const isOpen = !drawer.classList.contains("translate-x-full");
+      const shouldOpen = openState !== undefined ? openState : !isOpen;
+
+      if(shouldOpen) {
+        overlay.classList.remove("hidden");
+        setTimeout(() => overlay.classList.remove("opacity-0"), 10);
+        drawer.classList.remove("translate-x-full");
+      } else {
+        overlay.classList.add("opacity-0");
+        drawer.classList.add("translate-x-full");
+        setTimeout(() => overlay.classList.add("hidden"), 300);
+      }
+    }
+
+    // WhatsApp Formatted Bill Sender
+    function sendWhatsAppOrder() {
+      if(cart.length === 0) {
+        alert("Please add items to your cart first!");
+        return;
+      }
+
+      let text = `*NEW ORDER - Desert Spice Arabian BBQ 'N' Mandi*\n`;
+      text += `--------------------------------------\n`;
+      
+      cart.forEach(item => {
+        text += `• ${item.name} x ${item.qty} = ₹${(item.price * item.qty).toFixed(2)}\n`;
+      });
+
+      const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+      text += `--------------------------------------\n`;
+      text += `*TOTAL BILL AMOUNT: ₹${total.toFixed(2)}*\n\n`;
+      text += `Please confirm my order.`;
+
+      const phone = "919949911045";
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+      window.open(url, "_blank");
+    }
+
+    // Modal Helpers
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function handleReservation(e) {
+      e.preventDefault();
+      const name = document.getElementById("res-name").value;
+      const date = document.getElementById("res-date").value;
+      const guests = document.getElementById("res-guests").value;
+      const type = document.getElementById("res-type").value;
+
+      const text = `*TABLE RESERVATION REQUEST*\nName: ${name}\nDate: ${date}\nGuests: ${guests}\nPreference: ${type}`;
+      window.open(`https://wa.me/919949911045?text=${encodeURIComponent(text)}`, "_blank");
+      closeModal('reserve-modal');
+    }
+  </script>
+</body>
+</html>
